@@ -2,130 +2,171 @@ import 'package:flutter/material.dart';
 import 'package:todo/todo.dart';
 
 void main() {
-  // runApp関数でウィジェットツリーのルートとなる。
-  runApp(const App());
+  runApp(const TodoApp());
 }
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class TodoApp extends StatelessWidget {
+  const TodoApp({Key? key}) : super(key: key);
 
-  // stateLessWidget または stateFulWidgetを継承した場合は必ずbuildメソッドをオーバーライドしないといけない。
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
+    return MaterialApp(
+      title: 'Todo App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: TodoScreen(),
     );
   }
 }
 
-// 途中で値が変わったらそれを反映させる必要があるのでStatefulWidgetを記載する
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class TodoScreen extends StatefulWidget {
+  const TodoScreen({Key? key}) : super(key: key);
 
-// StatefulWidgetはWidgetにstateの概念をいれて拡張したもの
-// StatefulWidgetはcreateStateメソッドを持ち、これがStateクラスを返す
   @override
-  ////stateを継承している型
-  _HomeScreenState createState() => _HomeScreenState();
+  _TodoScreenState createState() => _TodoScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  // 初めに3つTODOリストを作成
-  final _todos = List.generate(
-    2,
-    (index) => ToDo(),
-  );
+class _TodoScreenState extends State<TodoScreen> {
+  List<String> todos = [];
+  TextEditingController todoController = TextEditingController();
+  int editingIndex = -1;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void _openDrawer() {
-    _scaffoldKey.currentState!.openDrawer();
+  void addTodo() {
+    setState(() {
+      todos.add(todoController.text);
+      todoController.clear();
+    });
   }
 
-  void _closeDrawer() {
-    Navigator.of(context).pop();
+  void removeTodoAtIndex(int index) {
+    setState(() {
+      todos.removeAt(index);
+    });
+  }
+
+  void startEditing(int index) {
+    setState(() {
+      editingIndex = index;
+      todoController.text = todos[index];
+    });
+  }
+
+  void updateTodo() {
+    setState(() {
+      todos[editingIndex] = todoController.text;
+      todoController.clear();
+      editingIndex = -1;
+    });
+  }
+
+  void cancelEditing() {
+    setState(() {
+      todoController.clear();
+      editingIndex = -1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // scaffold:足場
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('ToDo App'),
-          backgroundColor: const Color(0xFF388E3C),
-        ),
-        // ListView.builder()は基本的なリストを作成する
-        body: ListView.builder(
-          //生成する個数を指定する
-          itemCount: _todos.length,
-
-          // ↓itemBuilderの関数型の定義 Widget型を返す 引数にはこれら↓
-          // IndexedWidgetBuilder = Widget Function(BuildContext context, int index);
-          // CheckboxListTileについて 公式 https://api.flutter.dev/flutter/material/CheckboxListTile-class.html
-          itemBuilder: (BuildContext context, int index) {
+      appBar: AppBar(
+        title: const Text('Todo List'),
+        toolbarHeight: 50,
+      ),
+      body: ListView.builder(
+        itemCount: todos.length,
+        itemBuilder: (context, index) {
+          if (index == editingIndex) { // 編集中
             return ListTile(
-              leading: Checkbox(
-                value: _todos[index].checked,
-                onChanged: (e) {
-                  // setStateはフレームワーク側に画面更新が必要であることを通知します。
-                  setState(() {
-                    _todos[index].checked = e; //イベントeを受け取り反映 true, false
-                  });
-                },
+              title: TextField(
+                controller: todoController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Edit Todo',
+                ),
               ),
-              title: TextFormField(
-                style: _todos[index].checked == true
-                    ? const TextStyle(decoration: TextDecoration.lineThrough) // 取り消し線
-                    : const TextStyle(color: Colors.black), // falseの時はただの黒色
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.check),
+                    onPressed: () {
+                      updateTodo();
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      cancelEditing();
+                    },
+                  ),
+                ],
               ),
             );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          backgroundColor: const Color(0xFF388E3C),
-          onPressed: () {
-            // setState()を呼び出すことで裏では再度buildメソッドを呼び出して変更された変数で再描画している
-            setState(() {
-              _todos.add(
-                ToDo(),
-              );
-            });
-          },
-        ),
-        // ボトムにバーを追加できる。
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              activeIcon: Icon(Icons.book_online),
-              label: 'Book',
-              tooltip: "This is a Book Page",
-              backgroundColor: Colors.blue,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              activeIcon: Icon(Icons.book_online),
-              label: 'Book',
-              tooltip: "This is a Book Page",
-              backgroundColor: Colors.blue,
-            ),
-          ],
-        ),
-        // 左上のdrawer
-        drawer: Drawer(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text('This is the Drawer'),
-              ElevatedButton(
-                onPressed: _closeDrawer,
-                child: const Text('Close Drawer'),
+          } else { // 通常時
+            final todoItem = todos[index];
+            return Dismissible(
+              key: Key(todoItem),
+              onDismissed: (direction) {
+                removeTodoAtIndex(index);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Deleted: $todoItem'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              background: Container(
+                color: Colors.red,
+                child: const Icon(Icons.delete, color: Colors.white),
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 16.0),
               ),
-            ],
-          ),
-        ),
-      ));
+              child: ListTile(
+                title: Text(todoItem),
+                onTap: () {
+                  startEditing(index);
+                },
+              ),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Add Todo'),
+                content: TextField(
+                  controller: todoController,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter Todo',
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Add'),
+                    onPressed: () {
+                      addTodo();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

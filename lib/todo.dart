@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ToDo {
+class Todo {
   String title;
   bool? checked;
 
-  ToDo([this.title = "", this.checked = false]);
+  Todo([this.title = "", this.checked = false]);
 }
