@@ -30,11 +30,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<String> items = List.generate(10, (index) => 'Item ${index + 1}');
   // 初めに3つTODOリストを作成
-  final _todos = List.generate(
-    2,
-    (index) => ToDo(),
-  );
+  // final _todos = List.generate(
+  //   2,
+  //   (index) => ToDo(),
+  // );
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -52,44 +53,55 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('ToDo App'),
-          backgroundColor: const Color(0xFF388E3C),
+          backgroundColor: Color.fromARGB(255, 141, 146, 157),
+          automaticallyImplyLeading: true, // barのハンバーガーメニューフラグ
+          // toolbarHeight: 50 // appbarの高さ
         ),
         // ListView.builder()は基本的なリストを作成する
         body: ListView.builder(
           //生成する個数を指定する
-          itemCount: _todos.length,
-
+          itemCount: items.length,
           // ↓itemBuilderの関数型の定義 Widget型を返す 引数にはこれら↓
           // IndexedWidgetBuilder = Widget Function(BuildContext context, int index);
           // CheckboxListTileについて 公式 https://api.flutter.dev/flutter/material/CheckboxListTile-class.html
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              leading: Checkbox(
-                value: _todos[index].checked,
-                onChanged: (e) {
-                  // setStateはフレームワーク側に画面更新が必要であることを通知します。
-                  setState(() {
-                    _todos[index].checked = e; //イベントeを受け取り反映 true, false
-                  });
-                },
+          itemBuilder: (context, index) {
+          final item = items[index];
+          return Dismissible(
+            key: Key(item),
+            onDismissed: (direction) {
+              setState(() {
+                items.removeAt(index);
+              });
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$item を削除しました'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
               ),
-              title: TextFormField(
-                style: _todos[index].checked == true
-                    ? const TextStyle(decoration: TextDecoration.lineThrough) // 取り消し線
-                    : const TextStyle(color: Colors.black), // falseの時はただの黒色
-              ),
-            );
-          },
+            ),
+            child: ListTile(
+              title: Text(item),
+            ),
+          );
+        },
         ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          backgroundColor: const Color(0xFF388E3C),
+          backgroundColor: Color.fromARGB(255, 141, 146, 157),
           onPressed: () {
             // setState()を呼び出すことで裏では再度buildメソッドを呼び出して変更された変数で再描画している
             setState(() {
-              _todos.add(
-                ToDo(),
-              );
+              items.add('s');
             });
           },
         ),
