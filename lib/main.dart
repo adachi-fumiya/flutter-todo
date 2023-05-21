@@ -32,9 +32,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // 初めに3つTODOリストを作成
   final _todos = List.generate(
-    3,
+    2,
     (index) => ToDo(),
   );
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState!.openDrawer();
+  }
+
+  void _closeDrawer() {
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Checkbox(
                 value: _todos[index].checked,
                 onChanged: (e) {
+                  // setStateはフレームワーク側に画面更新が必要であることを通知します。
                   setState(() {
                     _todos[index].checked = e; //イベントeを受け取り反映 true, false
                   });
@@ -81,6 +92,40 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             });
           },
-        ));
+        ),
+        // ボトムにバーを追加できる。
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              activeIcon: Icon(Icons.book_online),
+              label: 'Book',
+              tooltip: "This is a Book Page",
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              activeIcon: Icon(Icons.book_online),
+              label: 'Book',
+              tooltip: "This is a Book Page",
+              backgroundColor: Colors.blue,
+            ),
+          ],
+        ),
+        // 左上のdrawer
+        drawer: Drawer(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('This is the Drawer'),
+              ElevatedButton(
+                onPressed: _closeDrawer,
+                child: const Text('Close Drawer'),
+              ),
+            ],
+          ),
+        ),
+      ));
   }
 }
