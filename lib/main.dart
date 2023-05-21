@@ -1,171 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:todo/todo.dart';
 
-void main() {
-  runApp(const TodoApp());
-}
+void main() => runApp(MyApp());
 
-class TodoApp extends StatelessWidget {
-  const TodoApp({Key? key}) : super(key: key);
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Todo App',
+      title: 'Flutter Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TodoScreen(),
+      home: MyHomePage(),
     );
   }
 }
 
-class TodoScreen extends StatefulWidget {
-  const TodoScreen({Key? key}) : super(key: key);
-
-  @override
-  _TodoScreenState createState() => _TodoScreenState();
-}
-
-class _TodoScreenState extends State<TodoScreen> {
-  List<String> todos = [];
-  TextEditingController todoController = TextEditingController();
-  int editingIndex = -1;
-
-  void addTodo() {
-    setState(() {
-      todos.add(todoController.text);
-      todoController.clear();
-    });
-  }
-
-  void removeTodoAtIndex(int index) {
-    setState(() {
-      todos.removeAt(index);
-    });
-  }
-
-  void startEditing(int index) {
-    setState(() {
-      editingIndex = index;
-      todoController.text = todos[index];
-    });
-  }
-
-  void updateTodo() {
-    setState(() {
-      todos[editingIndex] = todoController.text;
-      todoController.clear();
-      editingIndex = -1;
-    });
-  }
-
-  void cancelEditing() {
-    setState(() {
-      todoController.clear();
-      editingIndex = -1;
-    });
-  }
+class MyHomePage extends StatelessWidget {
+  final List<Map<String, dynamic>> dataList = [
+    {
+      'image': 'https://placehold.jp/50x50.png',
+      'title': 'きなこ',
+    },
+    {
+      'image': 'https://placehold.jp/50x50.png',
+      'title': 'もなりざ',
+    },
+    // {
+    //   'image': 'https://placehold.jp/50x50.png',
+    //   'title': 'タイトル3',
+    // },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
-        toolbarHeight: 50,
+        title: Text('Flutter Example'),
       ),
       body: ListView.builder(
-        itemCount: todos.length,
-        itemBuilder: (context, index) {
-          if (index == editingIndex) { // 編集中
-            return ListTile(
-              title: TextField(
-                controller: todoController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Edit Todo',
-                ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.check),
-                    onPressed: () {
-                      updateTodo();
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      cancelEditing();
-                    },
-                  ),
-                ],
-              ),
-            );
-          } else { // 通常時
-            final todoItem = todos[index];
-            return Dismissible(
-              key: Key(todoItem),
-              onDismissed: (direction) {
-                removeTodoAtIndex(index);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Deleted: $todoItem'),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              background: Container(
-                color: Colors.red,
-                child: const Icon(Icons.delete, color: Colors.white),
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 16.0),
-              ),
-              child: ListTile(
-                title: Text(todoItem),
-                onTap: () {
-                  startEditing(index);
-                },
-              ),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Add Todo'),
-                content: TextField(
-                  controller: todoController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter Todo',
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    child: const Text('Cancel'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Add'),
-                    onPressed: () {
-                      addTodo();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
+        itemCount: dataList.length,
+        // itemExtent: 100,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: ListItem(
+              image: dataList[index]['image'],
+              title: dataList[index]['title'],
+            ),
           );
         },
+      ),
+    );
+  }
+}
+
+class ListItem extends StatefulWidget {
+  final String image;
+  final String title;
+
+  ListItem({required this.image, required this.title});
+
+  @override
+  _ListItemState createState() => _ListItemState();
+}
+
+class _ListItemState extends State<ListItem> {
+  bool _isToggled1 = false;
+  bool _isToggled2 = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      // leading: Image.network(widget.image),
+      leading: SizedBox(
+        width: 100.0,
+        height: 100.0,
+        child: Image.network(
+          widget.image,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: Text(
+        widget.title,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Switch(
+            value: _isToggled1,
+            onChanged: (value) {
+              setState(() {
+                _isToggled1 = value;
+              });
+            },
+          ),
+          Switch(
+            value: _isToggled2,
+            onChanged: (value) {
+              setState(() {
+                _isToggled2 = value;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
