@@ -59,19 +59,6 @@ class _FirstPageState extends State<FirstPage> {
                   const SizedBox(width: 10),
                   Row(
                     children: [
-                      // Container(
-                      //   height: imageSize,
-                      //   width: imageSize,
-                      //   color: Colors.white,
-                      //   child: const Icon(Icons.light_mode, size: 50,),
-                      // ),
-                      // const SizedBox(width: 10),
-                      // Container(
-                      //   height: imageSize,
-                      //   width: imageSize,
-                      //   color: Colors.white,
-                      //   child: const Icon(Icons.dark_mode, size: 50,),
-                      // ),
                       SizedBox(
                         width: 120,
                         height: 120,
@@ -83,10 +70,10 @@ class _FirstPageState extends State<FirstPage> {
                             primary: mornigFlag[index] ? Colors.red[200] : Colors.blue,
                           ),
                           icon: Icon(Icons.light_mode),
-                          label: mornigFlag[index] ? Text('おなかいっぱいだよ') : Text('おなかすいたよ')
+                          label: mornigFlag[index] ? Text('full') : Text('hungry')
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       SizedBox(
@@ -99,8 +86,8 @@ class _FirstPageState extends State<FirstPage> {
                           style: ElevatedButton.styleFrom(
                             primary: dinnerFlag[index] ? Colors.red[200] : Colors.blue,
                           ),
-                          icon: Icon(Icons.dark_mode),
-                          label: dinnerFlag[index] ? Text('おなかいっぱいだよ') : Text('おなかすいたよ')
+                          icon: const Icon(Icons.dark_mode),
+                          label: dinnerFlag[index] ? Text('full') : Text('hungry')
                         ),
                       ),
                     ],
