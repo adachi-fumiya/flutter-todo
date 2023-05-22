@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 /// 日本時間を取得する
 String getDate() {
   initializeDateFormatting("ja");
+  // return 'sss';
   return DateFormat.yMMMMEEEEd('ja').format(DateTime.now()).toString();
 }
 
@@ -22,6 +23,7 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -59,8 +61,8 @@ class _FirstPageState extends State<FirstPage> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 120,
-                      height: 120,
+                      width: _screenSize.width * 0.3,
+                      height: _screenSize.width * 0.3,
                       child: ElevatedButton.icon(
                         onPressed: () => setState(() => 
                           mornigFlag[index] = !mornigFlag[index]
@@ -76,8 +78,8 @@ class _FirstPageState extends State<FirstPage> {
                       width: 10,
                     ),
                     SizedBox(
-                      width: 120,
-                      height: 120,
+                      width: _screenSize.width * 0.3,
+                      height: _screenSize.width * 0.3,
                       child: ElevatedButton.icon(
                         onPressed: () => setState(() => 
                           dinnerFlag[index] = !dinnerFlag[index]
