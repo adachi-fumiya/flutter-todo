@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
+/// 日本時間を取得する
+String getDate() {
+  initializeDateFormatting("ja");
+  return DateFormat.yMMMMEEEEd('ja').format(DateTime.now()).toString();
+}
 
 class FirstPage extends StatefulWidget {
   @override
@@ -16,9 +24,9 @@ class _FirstPageState extends State<FirstPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Confirmation Food',
-          style: TextStyle(
+        title: Text(
+          getDate(),
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
