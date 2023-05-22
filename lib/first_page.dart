@@ -24,76 +24,66 @@ class _FirstPageState extends State<FirstPage> {
         ),
         backgroundColor: Colors.red[200],
         actions: const [
-          // Icon(Icons.cast),
-          // SizedBox(width: 24),
-          // Icon(Icons.search),
-          // SizedBox(width: 24),
-          // Icon(Icons.bar_chart),
+          // アイコンを追加できる。
         ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: entries.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
+          return SizedBox(
             height: 150,
-            // width: double.infinity,
-            // padding: const EdgeInsets.all(8),
-            child: Container(
-              // color: Colors.orange,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // プロフィール画像
-                  Container(
-                    width: 110.0,
-                    height: 110.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage("images/${imagePaths[index]}.jpg"),
-                      ),
+            child: Row(
+              children: [
+                // プロフィール画像
+                Container(
+                  width: 110.0,
+                  height: 110.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage("images/${imagePaths[index]}.jpg"),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: ElevatedButton.icon(
-                          onPressed: () => setState(() => 
-                            mornigFlag[index] = !mornigFlag[index]
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: mornigFlag[index] ? Colors.red[200] : Colors.blue,
-                          ),
-                          icon: Icon(Icons.light_mode),
-                          label: mornigFlag[index] ? Text('full') : Text('hungry')
+                ),
+                const SizedBox(width: 10),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: ElevatedButton.icon(
+                        onPressed: () => setState(() => 
+                          mornigFlag[index] = !mornigFlag[index]
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: ElevatedButton.icon(
-                          onPressed: () => setState(() => 
-                            dinnerFlag[index] = !dinnerFlag[index]
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: dinnerFlag[index] ? Colors.red[200] : Colors.blue,
-                          ),
-                          icon: const Icon(Icons.dark_mode),
-                          label: dinnerFlag[index] ? Text('full') : Text('hungry')
+                        style: ElevatedButton.styleFrom(
+                          primary: mornigFlag[index] ? Colors.red[200] : Colors.blue,
                         ),
+                        icon: Icon(Icons.light_mode),
+                        label: mornigFlag[index] ? Text('full') : Text('hungry')
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: ElevatedButton.icon(
+                        onPressed: () => setState(() => 
+                          dinnerFlag[index] = !dinnerFlag[index]
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: dinnerFlag[index] ? Colors.red[200] : Colors.blue,
+                        ),
+                        icon: const Icon(Icons.dark_mode),
+                        label: dinnerFlag[index] ? Text('full') : Text('hungry')
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           );
         },
