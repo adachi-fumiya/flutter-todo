@@ -21,6 +21,8 @@ class TodoHogePage extends StatelessWidget {
 }
 
 class ToggleButton extends StatefulWidget {
+  const ToggleButton({super.key});
+
   @override
   _ToggleButtonState createState() => _ToggleButtonState();
 }
@@ -50,8 +52,8 @@ class _ToggleButtonState extends State<ToggleButton> {
             Container(
               width: 25,
               height: 25,
-              margin: EdgeInsets.all(2),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),

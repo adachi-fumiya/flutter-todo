@@ -3,6 +3,8 @@ import 'second_page.dart';
 
 class FirstPage extends StatelessWidget {
   String nameText = '';
+
+  FirstPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +18,7 @@ class FirstPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder()
                 ),
                 onChanged: (text) {
